@@ -1,4 +1,11 @@
 @echo off
+REM https://msdn.microsoft.com/zh-cn/library/windows/desktop/bb736357(v=vs.85).aspx
+REM 取的管理员权限
+setlocal EnableExtensions
+setlocal EnableDelayedExpansion
+set "params=%*"
+cd /d "%~dp0" && ( if exist "%temp%\getadmin.vbs" del "%temp%\getadmin.vbs" ) && fsutil dirty query %systemdrive% 1>nul 2>nul || (  echo Set UAC = CreateObject^("Shell.Application"^) : UAC.ShellExecute "cmd.exe", "/k cd ""%~sdp0"" && %~s0 %params%", "", "runas", 1 >> "%temp%\getadmin.vbs" && "%temp%\getadmin.vbs" && exit /B )
+
 for /f "tokens=6 delims=[]. " %%G in ('ver') do if %%G lss 19044 goto :version
 openfiles 1>nul 2>nul || goto :administrator
 if /i "%PROCESSOR_ARCHITECTURE%" equ "AMD64" (set "arch=x64") else (set "arch=x86")
